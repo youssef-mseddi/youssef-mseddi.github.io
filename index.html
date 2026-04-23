@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Youssef Mseddi — Data Science & BI | GenAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:        #0a0800;
+      --surface:   #110e00;
+      --card:      #171200;
+      --border:    #2e2200;
+      --accent:    #ffaa00;
+      --accent2:   #ff6a00;
+      --accent3:   #ffd700;
+      --text:      #e8d9b0;
+      --muted:     #7a6030;
+      --heading:   #fff4d6;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: .4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 4rem;
+      background: rgba(10,8,0,.88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 3px;
+      color: var(--accent);
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: .78rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── SECTIONS ── */
+    section { position: relative; z-index: 1; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 8rem 4rem 4rem;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 50%, rgba(255,170,0,.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,106,0,.05) 0%, transparent 70%);
+    }
+    .hero-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: .75rem;
+      color: var(--accent);
+      letter-spacing: 3px;
+      margin-bottom: 1rem;
+      opacity: 0; animation: fadeUp .6s .2s forwards;
+    }
+    .hero-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4rem, 10vw, 9rem);
+      line-height: .95;
+      color: var(--heading);
+      letter-spacing: 2px;
+      opacity: 0; animation: fadeUp .6s .4s forwards;
+    }
+    .hero-name span { color: var(--accent); }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-top: 1.5rem;
+      max-width: 560px;
+      line-height: 1.7;
+      opacity: 0; animation: fadeUp .6s .6s forwards;
+    }
+    .hero-badges {
+      display: flex; flex-wrap: wrap; gap: .7rem;
+      margin-top: 2rem;
+      opacity: 0; animation: fadeUp .6s .8s forwards;
+    }
+    .badge {
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem;
+      padding: .35rem .9rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: var(--card);
+      letter-spacing: 1px;
+    }
+    .badge.accent { border-color: var(--accent); color: var(--accent); }
+    .badge.green  { border-color: var(--accent2); color: var(--accent2); }
+    .hero-cta {
+      display: flex; gap: 1rem; margin-top: 2.5rem;
+      opacity: 0; animation: fadeUp .6s 1s forwards;
+    }
+    .btn {
+      font-family: 'DM Mono', monospace;
+      font-size: .8rem;
+      letter-spacing: 1px;
+      padding: .75rem 2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all .2s;
+      cursor: pointer; border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0800;
+      font-weight: 600;
+    }
+    .btn-primary:hover { opacity: .85; transform: translateY(-2px); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── GRID LAYOUT ── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 4rem; }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      letter-spacing: 3px;
+      color: var(--heading);
+      margin-bottom: .5rem;
+    }
+    .section-line {
+      width: 60px; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      margin-bottom: 3rem;
+    }
+
+    /* ── ABOUT ── */
+    #about { padding: 7rem 0; }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start;
+    }
+    .about-text p {
+      font-size: 1rem; line-height: 1.8; color: var(--text);
+      margin-bottom: 1.2rem;
+    }
+    .about-text strong { color: var(--accent); }
+    .info-list { list-style: none; margin-top: 1.5rem; }
+    .info-list li {
+      font-family: 'DM Mono', monospace;
+      font-size: .8rem;
+      color: var(--muted);
+      padding: .5rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex; gap: 1rem;
+    }
+    .info-list li span:first-child { color: var(--accent); min-width: 100px; }
+
+    /* ── SKILLS ── */
+    #skills { padding: 7rem 0; background: var(--surface); }
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
+    }
+    .skill-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color .2s, transform .2s;
+    }
+    .skill-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .skill-card-title {
+      font-family: 'DM Mono', monospace;
+      font-size: .75rem;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .skill-tag {
+      font-size: .75rem;
+      padding: .25rem .7rem;
+      border-radius: 6px;
+      background: rgba(255,170,0,.07);
+      border: 1px solid rgba(255,170,0,.15);
+      color: var(--text);
+    }
+
+    /* ── EXPERIENCE ── */
+    #experience { padding: 7rem 0; }
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 1px; background: var(--border);
+    }
+    .timeline-item {
+      position: relative; margin-bottom: 3rem;
+      opacity: 0; transform: translateX(-20px);
+      transition: all .5s;
+    }
+    .timeline-item.visible { opacity: 1; transform: translateX(0); }
+    .timeline-dot {
+      position: absolute; left: -2.4rem; top: .4rem;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+    }
+    .timeline-date {
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem;
+      color: var(--accent);
+      letter-spacing: 1px;
+      margin-bottom: .4rem;
+    }
+    .timeline-role {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--heading);
+      margin-bottom: .2rem;
+    }
+    .timeline-company {
+      font-size: .85rem;
+      color: var(--muted);
+      margin-bottom: .8rem;
+    }
+    .timeline-desc { font-size: .9rem; line-height: 1.7; color: var(--text); }
+    .timeline-desc li { margin-bottom: .3rem; padding-left: 1rem; position: relative; }
+    .timeline-desc li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
+
+    /* ── PROJECTS ── */
+    #projects { padding: 7rem 0; background: var(--surface); }
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem;
+    }
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all .25s;
+      position: relative; overflow: hidden;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0; transition: opacity .25s;
+    }
+    .project-card:hover { border-color: rgba(0,212,255,.3); transform: translateY(-4px); }
+    .project-card:hover::before { opacity: 1; }
+    .project-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .project-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 1rem;
+      color: var(--heading);
+      margin-bottom: .5rem;
+    }
+    .project-desc { font-size: .88rem; line-height: 1.7; color: var(--muted); margin-bottom: 1.2rem; }
+    .project-stack { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .stack-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: .68rem;
+      padding: .2rem .6rem;
+      border-radius: 4px;
+      background: rgba(255,106,0,.07);
+      border: 1px solid rgba(255,106,0,.2);
+      color: var(--accent2);
+    }
+    .project-links { display: flex; gap: 1rem; margin-top: 1.2rem; }
+    .project-link {
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: opacity .2s;
+    }
+    .project-link:hover { opacity: .7; }
+
+    /* ── EDUCATION ── */
+    #education { padding: 7rem 0; }
+    .edu-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;
+    }
+    .edu-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.8rem;
+      transition: border-color .2s;
+    }
+    .edu-card:hover { border-color: var(--accent2); }
+    .edu-date {
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem;
+      color: var(--accent2);
+      letter-spacing: 1px;
+      margin-bottom: .5rem;
+    }
+    .edu-degree { font-size: 1rem; font-weight: 500; color: var(--heading); margin-bottom: .3rem; }
+    .edu-school { font-size: .85rem; color: var(--muted); }
+
+    /* ── CONTACT ── */
+    #contact {
+      padding: 7rem 0;
+      background: var(--surface);
+      text-align: center;
+    }
+    .contact-sub {
+      font-size: 1rem; color: var(--muted); margin-bottom: 3rem; line-height: 1.7;
+    }
+    .contact-links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+    .contact-link {
+      font-family: 'DM Mono', monospace;
+      font-size: .8rem;
+      letter-spacing: 1px;
+      padding: .8rem 2rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      background: var(--card);
+      transition: all .2s;
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .contact-link:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 4rem;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem;
+      color: var(--muted);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      #hero { padding: 7rem 1.5rem 4rem; }
+      .container { padding: 0 1.5rem; }
+      .about-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">YM</div>
+  <ul class="nav-links">
+    <li><a href="#about">ABOUT</a></li>
+    <li><a href="#skills">SKILLS</a></li>
+    <li><a href="#experience">EXPERIENCE</a></li>
+    <li><a href="#projects">PROJECTS</a></li>
+    <li><a href="#education">EDUCATION</a></li>
+    <li><a href="#contact">CONTACT</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <p class="hero-tag">DATA SCIENCE · BI · GENAI</p>
+  <h1 class="hero-name">YOUSSEF<br/><span>MSEDDI</span></h1>
+  <p class="hero-sub">
+    Engineering student specializing in Business Intelligence & Artificial Intelligence.
+    Researcher at the LIMTIC laboratory, working on autonomous multi-agent BI systems applied to finance.
+  </p>
+  <div class="hero-badges">
+    <span class="badge accent">DATA SCIENCE</span>
+    <span class="badge green">GENERATIVE AI</span>
+    <span class="badge">MACHINE LEARNING</span>
+    <span class="badge">ETL · MLOPS</span>
+    <span class="badge">ARIANA, TUNISIA 🇹🇳</span>
+  </div>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">VIEW PROJECTS</a>
+    <a href="#contact" class="btn btn-ghost">CONTACT ME</a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <h2 class="section-title">ABOUT</h2>
+    <div class="section-line"></div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          I'm a <strong>Business Intelligence & IA</strong> engineer in training, pursuing a double degree —
+          <strong>Software Engineering at ESPRIT</strong> and a <strong>Master of Research in Software Engineering at ISI Ariana</strong>.
+        </p>
+        <p>
+          I'm currently conducting research at <strong>LIMTIC Laboratory</strong> on an autonomous
+          BI Multi-Agent System applied to financial risk analysis and decision-making,
+          comparing expert systems vs Deep Learning ANN/PyTorch models.
+        </p>
+        <p>
+          My interests span Business Intelligence, Machine Learning, Generative AI, MLOps,
+          and ETL Automation. I enjoy building end-to-end data systems — from pipelines
+          and warehouses to dashboards and predictive models.
+        </p>
+        <p>🎓 Always learning · 🔬 Currently researching · 💼 Open to internships in Data Science, IA & BI</p>
+      </div>
+      <div>
+        <ul class="info-list">
+          <li><span>ROLE</span><span> BI & IA Engineer</span></li>
+          <li><span>RESEARCH</span><span>Autonomous BI Multi-Agent @ LIMTIC</span></li>
+          <li><span>ESPRIT</span><span>Engineering degree — 2025–Present</span></li>
+          <li><span>ISI ARIANA</span><span>Master of Research in SWE — 2024–2026</span></li>
+          <li><span>LOCATION</span><span>Ariana, Tunisia 🇹🇳</span></li>
+          <li><span>EMAIL</span><span>youssef.mseddi0@gmail.com</span></li>
+          <li><span>AVAILABLE</span><span>Stage Data Science · IA · BI</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <h2 class="section-title">SKILLS</h2>
+    <div class="section-line"></div>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <p class="skill-card-title">DATA & BI</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Power BI</span><span class="skill-tag">DAX</span>
+          <span class="skill-tag">SSIS</span><span class="skill-tag">SSAS</span>
+          <span class="skill-tag">SSMS</span><span class="skill-tag">Talend</span>
+          <span class="skill-tag">ETL</span><span class="skill-tag">Modélisation dimensionnelle</span>
+          <span class="skill-tag">Hadoop</span><span class="skill-tag">Spark</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <p class="skill-card-title">ML & AI</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Scikit-learn</span><span class="skill-tag">PyTorch</span>
+          <span class="skill-tag">Machine Learning</span><span class="skill-tag">MLOps</span>
+          <span class="skill-tag">LangChain</span><span class="skill-tag">RAG</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <p class="skill-card-title">PROGRAMMING</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Python</span><span class="skill-tag">SQL</span>
+          <span class="skill-tag">Java</span><span class="skill-tag">TypeScript</span>
+          <span class="skill-tag">R</span><span class="skill-tag">C++</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <p class="skill-card-title">WEB & BACKEND</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Spring Boot</span><span class="skill-tag">Quarkus</span>
+          <span class="skill-tag">Angular</span><span class="skill-tag">React</span>
+          <span class="skill-tag">Flask</span><span class="skill-tag">API REST</span>
+          <span class="skill-tag">PostgreSQL</span><span class="skill-tag">MongoDB</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <p class="skill-card-title">DEVOPS & TOOLS</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Docker</span><span class="skill-tag">Airflow</span>
+          <span class="skill-tag">Git</span><span class="skill-tag">GitLab CI</span>
+          <span class="skill-tag">n8n</span><span class="skill-tag">Jira</span>
+          <span class="skill-tag">Scrum</span><span class="skill-tag">Figma</span>
+           <span class="skill-tag">Odoo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <h2 class="section-title">EXPERIENCE</h2>
+    <div class="section-line"></div>
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <p class="timeline-date">MARS 2026 – PRÉSENT</p>
+        <p class="timeline-role">Research Thesis</p>
+        <p class="timeline-company"> LIMTIC Laboratory · ISI Ariana</p>
+        <ul class="timeline-desc">
+          <li>Study and improvement of an autonomous Multi-Agent BI system applied to finance</li>
+          <li>Experimental comparison: expert system vs Deep Learning ANN/PyTorch </li>
+          <li>Proposal of an enhanced version with analytical and experimental evaluation</li>
+          <li><strong style="color:var(--accent)">Stack :</strong> Python · PyTorch · Scikit-learn · Moteur of inference · BI Agents</li>
+        </ul>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <p class="timeline-date">JUL. 2025</p>
+        <p class="timeline-role">Business Analyst internship</p>
+        <p class="timeline-company">BH Banque ·  Tunis</p>
+        <ul class="timeline-desc">
+          <li>Discovered the functioning of a banking institution: branch operations, credit, management control, and trading room</li>
+          <li>Gained a global understanding of banking professions, data flows, and decision-making processes</li>
+        </ul>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <p class="timeline-date">FEB. 2024 – AUG 2024</p>
+        <p class="timeline-role">Full Stack developer</p>
+        <p class="timeline-company">Wecraft · UNC, Tunis</p>
+        <ul class="timeline-desc">
+          <li>Developed CRM modules for pharmaceutical laboratories using a microservices architecture</li>
+          <li>Analyzed client requirements and designed interfaces in collaboration with the UI/UX team</li>
+          <li>Delivered in an Agile Scrum environment</li>
+          <li><strong style="color:var(--accent)">Stack :</strong> React · TypeScript · Java/Quarkus · PostgreSQL · GitLab</li>
+        </ul>
+      </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+        <p class="timeline-date">JUL. 2022</p>
+        <p class="timeline-role">Introductory Internship</p>
+        <p class="timeline-company">Tunisie Télécom · Ghazela Technopark, Tunis</p>
+     <ul class="timeline-desc">
+      <li>Studied and applied Agile methodologies in project management using Jira</li>
+     </ul>
+   </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <h2 class="section-title">PROJECTS</h2>
+    <div class="section-line"></div>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-icon">🏦</div>
+          <p class="project-title">Multi-Agent BI System — Finance</p>
+          <p class="project-desc">Comparative study: expert system vs Deep Learning ANN/PyTorch applied to financial risk analysis and decision support. Research @ LIMTIC.</p>
+        <div class="project-stack">
+          <span class="stack-tag">Python</span><span class="stack-tag">PyTorch</span>
+          <span class="stack-tag">Scikit-learn</span><span class="stack-tag">Agents BI</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/youssef-mseddi" class="project-link">→ GITHUB</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">📊</div>
+         <p class="project-title">BI & AI Project — Scout Center</p>
+         <p class="project-desc">Complete Data Warehouse + ETL pipeline + interactive dashboards + ML models for prediction, anomaly detection, and time series forecasting.</p>
+        <div class="project-stack">
+          <span class="stack-tag">Power BI</span><span class="stack-tag">Talend</span>
+          <span class="stack-tag">Airflow</span><span class="stack-tag">Python</span>
+          <span class="stack-tag">MLOps</span><span class="stack-tag">MySQL</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/youssef-mseddi" class="project-link">→ GITHUB</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">🚲</div>
+         <p class="project-title">Predictive AI Platform — Bikes</p>
+         <p class="project-desc">ML model for bike demand prediction (weather, date, availability) + KMeans clustering + PCA dimensionality reduction + interactive analytical dashboard.</p>
+        <div class="project-stack">
+          <span class="stack-tag">Python</span><span class="stack-tag">Scikit-learn</span>
+          <span class="stack-tag">KMeans</span><span class="stack-tag">ACP</span>
+          <span class="stack-tag">Flask</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/youssef-mseddi" class="project-link">→ GITHUB</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">🌐</div>
+        <p class="project-title">LinguaGroq — AI Translator</p>
+        <p class="project-desc">Multilingual AI translator (25+ languages) built with Streamlit, LangChain ChatPromptTemplate, and Groq API. Supports LLaMA 3.3, Mixtral, and Gemma2.</p>
+        <div class="project-stack">
+          <span class="stack-tag">Python</span><span class="stack-tag">Streamlit</span>
+          <span class="stack-tag">LangChain</span><span class="stack-tag">Groq API</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/youssef-mseddi/linguagroq-translator" class="project-link">→ GITHUB</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">💊</div>
+        <p class="project-title">CRM Pharma — Full Stack</p>
+        <p class="project-desc">CRM modules for pharmaceutical laboratories built on a microservices architecture. Developed in collaboration with the UI/UX team based on Figma mockups.</p>
+        <div class="project-stack">
+          <span class="stack-tag">React</span><span class="stack-tag">TypeScript</span>
+          <span class="stack-tag">Quarkus</span><span class="stack-tag">PostgreSQL</span>
+          <span class="stack-tag">GitLab CI</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/youssef-mseddi" class="project-link">→ GITHUB</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="container">
+    <h2 class="section-title">EDUCATION</h2>
+    <div class="section-line"></div>
+    <div class="edu-grid">
+      <div class="edu-card">
+        <p class="edu-date">SEPT. 2025 – PRESENT</p>
+        <p class="edu-degree">Software Engineering Degree</p>
+        <p class="edu-school">ESPRIT · Ariana, Tunisia</p>
+      </div>
+      <div class="edu-card">
+        <p class="edu-date">SEPT. 2024 – SEPT. 2026</p>
+        <p class="edu-degree">Master of Research in SWE</p>
+        <p class="edu-school">Higher Institue of Computer science · ISI Ariana</p>
+      </div>
+      <div class="edu-card">
+        <p class="edu-date">SEPT. 2021 – MAI 2024</p>
+        <p class="edu-degree">Bachelor in Computer Science</p>
+        <p class="edu-school">ISTIC · Tunisia</p>
+      </div>
+      <div class="edu-card" style="border-color: rgba(124,255,160,.3);">
+        <p class="edu-date" style="color:var(--accent2)">AVR. 2026 – MAI 2026</p>
+        <p class="edu-degree">Bootcamp GenAI — Nvidia</p>
+        <p class="edu-school">Transformers · Prompt Engineering · LangChain · RAG · Agentic AI</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <h2 class="section-title">CONTACT</h2>
+    <div class="section-line" style="margin: 0 auto 1.5rem;"></div>
+    <p class="contact-sub">
+      Open to internship opportunities in <strong style="color:var(--accent)">Data Science</strong>,
+      <strong style="color:var(--accent)">Business Intelligence</strong> &
+      <strong style="color:var(--accent2)">Generative AI</strong>.<br/>
+      Tunisia & Remote — Let's connect!
+    </p>
+    <div class="contact-links">
+      <a href="mailto:youssef.mseddi0@gmail.com" class="contact-link">✉ EMAIL</a>
+      <a href="https://www.linkedin.com/in/youssef-mseddi-690078228/" target="_blank" class="contact-link">in LINKEDIN</a>
+      <a href="https://github.com/youssef-mseddi" target="_blank" class="contact-link">⌥ GITHUB</a>
+      <a href="assets/YOUSSEF_MSEDDI_CV.pdf" download class="contact-link" style="border-color:var(--accent2);color:var(--accent2)">↓ DOWNLOAD CV</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2026 Youssef Mseddi</span>
+  <span>Built with HTML · CSS · JS · ☕</span>
+</footer>
+
+<script>
+  // Scroll reveal for timeline items
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.timeline-item').forEach(el => observer.observe(el));
+
+  // Active nav link highlight
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  });
+</script>
+</body>
+</html>
